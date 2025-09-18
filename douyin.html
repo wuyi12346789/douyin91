@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抖阴 - 记录美好生活</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: #000;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #000;
+            z-index: 100;
+            border-bottom: 1px solid #2f2f2f;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FE2C55, #25F4EE);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-icon, .menu-icon {
+            font-size: 20px;
+            color: #fff;
+        }
+        
+        /* 主选项卡 */
+        .tabs-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            background: #000;
+            border-bottom: 1px solid #2f2f2f;
+        }
+        
+        .tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tabs {
+            display: inline-flex;
+            padding: 10px 15px;
+        }
+        
+        .tab {
+            padding: 8px 15px;
+            font-size: 16px;
+            position: relative;
+            color: #b3b3b3;
+            flex-shrink: 0;
+        }
+        
+        .tab.active {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+        }
+        
+        /* 内容区域 */
+        .content {
+            padding: 15px;
+            padding-bottom: 70px;
+        }
+        
+        .section-title {
+            color: #fff;
+            margin: 20px 0 15px;
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-title span {
+            font-size: 14px;
+            color: #aaa;
+            font-weight: normal;
+        }
+        
+        /* 分类导航 */
+        .category-nav {
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        .category-title {
+            color: #25F4EE;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-title i {
+            margin-right: 8px;
+        }
+        
+        .category-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .category-item {
+            background: #252525;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-item:hover {
+            background: #2e2e2e;
+            transform: translateY(-3px);
+        }
+        
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FE2C55, #25F4EE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .category-name {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .category-desc {
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        /* 视频网格 */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .video-card {
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 9/16;
+            background: #333;
+        }
+        
+        .video-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+        
+        .video-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .video-author {
+            font-size: 12px;
+            color: #b3b3b3;
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background: #555;
+            object-fit: cover;
+        }
+        
+        .video-stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .video-stats i {
+            margin-right: 4px;
+            color: #fff;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            background: #000;
+            border-top: 1px solid #2f2f2f;
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #b3b3b3;
+            font-size: 12px;
+        }
+        
+        .nav-item.active {
+            color: #fff;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* 页面内容 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 375px) {
+            .video-title {
+                font-size: 12px;
+            }
+            
+            .tab {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            
+            .category-items {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 加载动画 */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        /* 视频播放器 */
+        .video-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .player-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .close-player {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #fff;
+            z-index: 1001;
+        }
+        
+        .player-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* 暗彩色赞助横幅 */
+        .sponsor-bar {
+            margin: 12px 15px;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #c8c8c8;
+            background: linear-gradient(90deg,
+                                        rgba(254, 44, 85, .25) 0%,
+                                        rgba(37, 244, 238, .25) 100%);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 20px;
+            letter-spacing: 1px;
+            backdrop-filter: blur(4px);
+        }
+
+        .sponsor-name {
+            color: #25F4EE;
+            font-weight: 600;
+            text-decoration: none;
+            text-shadow: 0 0 4px rgba(37, 244, 238, .45);
+        }
+        
+        /* 上传模态框 */
+        .upload-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            background: #252525;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .upload-area {
+            border: 2px dashed #25F4EE;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            background: #2a2a2a;
+        }
+        
+        .upload-icon {
+            font-size: 40px;
+            color: #25F4EE;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #FE2C55, #25F4EE);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 10px 5px;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .video-play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: white;
+            opacity: 0.8;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 发布按钮样式 */
+        .publish-btn {
+            background: linear-gradient(45deg, #FE2C55, #25F4EE);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航 -->
+        <div class="header">
+            <div class="logo">抖阴</div>
+            <div class="search-icon"><i class="fas fa-search"></i></div>
+        </div>
+        
+        <!-- 主选项卡 -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" data-page="home">推荐</div>
+                <div class="tab" data-page="follow">关注</div>
+                <div class="tab" data-page="friends">VIP专区</div>
+                <div class="tab" data-page="profile">我的</div>
+                <div class="tab" data-page="live">直播</div>
+                <div class="tab" data-page="theater">放映厅</div>
+                <div class="tab" data-page="drama">短剧</div>
+            </div>
+        </div>
+        
+        <!-- 首页内容 -->
+        <div id="home-page" class="page active">
+            <div class="content">
+                <div class="category-nav">
+                    <div class="category-title">
+                        <i class="fas fa-compass"></i>导航
+                    </div>
+                    <div class="category-items">
+                        <div class="category-item" data-category="domestic">
+                            <div class="category-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="category-name">国产专区</div>
+                            <div class="category-desc">精彩国内内容</div>
+                        </div>
+                        
+                        <div class="category-item" data-category="europe-america">
+                            <div class="category-icon">
+                                <i class="fas fa-globe-americas"></i>
+                            </div>
+                            <div class="category-name">欧美专区</div>
+                            <div class="category-desc">西方热门视频</div>
+                        </div>
+                        
+                        <div class="category-item" data-category="japan-korea">
+                            <div class="category-icon">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="category-name">日韩专区</div>
+                            <div class="category-desc">东亚美好文化</div>
+                        </div>
+                        
+                        <div class="category-item" data-category="free">
+                            <div class="category-icon">
+                                <i class="fas fa-unlock"></i>
+                            </div>
+                            <div class="category-name">自拍专区</div>
+                            <div class="category-desc">开放创作空间</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 赞助横幅 -->
+                <div class="sponsor-bar">
+                    <span class="sponsor-name">❤️❤️❤️性感王吉祥在线发牌❤️❤️❤️</span> 
+                </div>
+
+                <div class="sponsor-bar">
+                    <span class="sponsor-name">❤️❤️❤️澳门新葡京独家赞助播出❤️❤️❤️</span> 
+                </div>
+
+                
+                <div class="section-title">
+                    热门推荐 <span>更多 <i class="fas fa-chevron-right"></i></span>
+                </div>
+                
+                <div class="video-grid">
+                    <!-- 视频卡片 -->
+                    <div class="video-card" data-video="1">
+                        <img class="video-thumb" src="yin/wu.jpg" alt="风景如画的地方">
+                        <div class="video-play-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="video-stats">
+                            <i class="fas fa-heart"></i> 2.3w
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">风景如画的地方</div>
+                            <div class="video-author">
+                                <img class="author-avatar" src="yin/avatar.jpg" alt="头像">
+                                <span>小m</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card" data-video="2">
+                        <img class="video-thumb" src="yin/wu1.jpg" alt="舞蹈挑战">
+                        <div class="video-play-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="video-stats">
+                            <i class="fas fa-heart"></i> 直播中
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">舞蹈挑战</div>
+                            <div class="video-author">
+                                <img class="author-avatar" src="yin/avatar1.jpg" alt="头像">
+                                <span>yum_007</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card" data-video="3">
+                        <img class="video-thumb" src="yin/wu2.jpg" alt="自拍挑战">
+                        <div class="video-play-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="video-stats">
+                            <i class="fas fa-heart"></i> 3.7w
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">自拍挑战</div>
+                            <div class="video-author">
+                                <img class="author-avatar" src="yin/avatar2.jpg" alt="头像">
+                                <span>困困兔</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card" data-video="4">
+                        <img class="video-thumb" src="yin/wu3.jpg" alt="日常合集">
+                        <div class="video-play-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="video-stats">
+                            <i class="fas fa-heart"></i> 4.2w
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">日常合集</div>
+                            <div class="video-author">
+                                <img class="author-avatar" src="yin/avatar3.jpg" alt="头像">
+                                <span>老湿</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    为你推荐 <span>更多 <i class="fas fa-chevron-right"></i></span>
+                </div>
+                
+                <div class="video-grid">
+                    <div class="video-card" data-video="5">
+                        <img class="video-thumb" src="yin/wu4.jpg" alt="萌宠日常">
+                        <div class="video-play-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="video-stats">
+                            <i class="fas fa-heart"></i> 直播中
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">萌宠日常</div>
+                            <div class="video-author">
+                                <img class="author-avatar" src="yin/avatar4.jpg" alt="头像">
+                                <span>是m不是s</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card" data-video="6">
+                        <img class="video-thumb" src="yin/wu5.jpg" alt="健身房的诱惑">
+                        <div class="video-play-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="video-stats">
+                            <i class="fas fa-heart"></i> 2.9w
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">健身房的诱惑</div>
+                            <div class="video-author">
+                                <img class="author-avatar" src="yin/avatar5.jpg" alt="头像">
+                                <span>健身教练</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 分类页面 -->
+        <div id="category-page" class="page">
+            <div class="content">
+                <div class="section-title">
+                    <span id="back-button"><i class="fas fa-arrow-left"></i> 返回</span>
+                    <span id="category-name">分类专区</span>
+                    <span></span>
+                </div>
+                
+                <div class="video-grid" id="category-videos">
+                    <!-- 分类视频将通过JS动态加载 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>首页</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"><i class="fas fa-fire"></i></div>
+                <span>短视频</span>
+            </div>
+            <div class="nav-item" id="publish-btn">
+                <div class="publish-btn">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <span>发布</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"><i class="fas fa-comment"></i></div>
+                <span>消息</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <span>我</span>
+            </div>
+        </div>
+        
+        <!-- 上传模态框 -->
+        <div class="upload-modal" id="upload-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">上传视频</div>
+                    <div class="close-modal" id="close-modal">&times;</div>
+                </div>
+                
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p>点击或拖拽视频到这里</p>
+                    <p class="note">支持MP4、MOV格式，最大100MB</p>
+                </div>
+                <input type="file" id="file-input" accept="video/*" style="display: none;">
+                
+                <button class="btn" id="confirm-upload"><i class="fas fa-check"></i> 确认上传</button>
+            </div>
+        </div>
+        
+        <!-- 视频播放器 -->
+        <div class="video-player" id="video-player">
+            <div class="player-container">
+                <div class="close-player" id="close-player">
+                    <i class="fas fa-times"></i>
+                </div>
+                <video class="player-video" id="player-video" controls></video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面切换功能
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.getElementById('home-page').classList.add('active');
+                document.getElementById('category-page').classList.remove('active');
+            });
+        });
+        
+        // 分类专区点击跳转
+        const categoryItems = document.querySelectorAll('.category-item');
+        const homePage = document.getElementById('home-page');
+        const categoryPage = document.getElementById('category-page');
+        const categoryVideos = document.getElementById('category-videos');
+        const categoryName = document.getElementById('category-name');
+        const backButton = document.getElementById('back-button');
+        
+        // 分类数据
+        const categoryData = {
+            'domestic': {
+                name: '国产专区',
+                videos: [
+                    { title: '内地露出', author: '大波波', likes: '1.5w' },
+                    { title: '有大哥看', author: '爱好者', likes: '2.1w' },
+                    { title: '跳跳舞', author: '小兔子', likes: '3.4w' },
+                    { title: '小姨的诱惑', author: '圣杯', likes: '1.8w' }
+                ]
+            },
+            'europe-america': {
+                name: '欧美专区',
+                videos: [
+                    { title: '欧美流行舞蹈', author: '舞蹈西施', likes: '3.2w' },
+                    { title: '西方美食制作', author: '小吃货', likes: '2.7w' },
+                    { title: '户外露出', author: '旅行家', likes: '2.3w' },
+                    { title: '要吃我的菜还是我', author: '小厨娘', likes: '1.9w' }
+                ]
+            },
+            'japan-korea': {
+                name: '日韩专区',
+                videos: [
+                    { title: '无能的丈夫', author: '东岛结衣', likes: '4.5w' },
+                    { title: '妈妈的朋友', author: '朴爱玲', likes: '3.1w' },
+                    { title: '遇见你的那天', author: '海翼天', likes: '2.8w' },
+                    { title: '姐姐的对象', author: '李正恩', likes: '2.2w' }
+                ]
+            },
+            'free': {
+                name: '自拍专区',
+                videos: [
+                    { title: '今天有点寂寞哦', author: '波波妹', likes: '1.7w' },
+                    { title: '手工活继续', author: '手工艺人', likes: '2.0w' },
+                    { title: '新能源男友到了', author: '爱而不得', likes: '1.5w' },
+                    { title: '喜欢深入', author: '叫妈妈', likes: '1.9w' }
+                ]
+            }
+        };
+        
+        // 分类点击事件
+        categoryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const category = this.dataset.category;
+                const data = categoryData[category];
+                
+                categoryName.textContent = data.name;
+                categoryVideos.innerHTML = '';
+                
+                data.videos.forEach(video => {
+                    const colors = ['#3a1c71', '#d76d77', '#ffaf7b', '#45a247', '#f3c622', '#3498db'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'video-card';
+                    videoCard.innerHTML = `
+                        <div class="video-thumb" style="background-color: ${randomColor}"></div>
+                        <div class="video-play-icon"><i class="fas fa-play-circle"></i></div>
+                        <div class="video-stats">
+                            <i class="fas fa-heart"></i> ${video.likes}
+                        </div>
+                        <div class="video-info">
+                            <div class="video-title">${video.title}</div>
+                            <div class="video-author">
+                                <div class="author-avatar"></div>
+                                <span>${video.author}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    categoryVideos.appendChild(videoCard);
+                });
+                
+                homePage.classList.remove('active');
+                categoryPage.classList.add('active');
+            });
+        });
+        
+        // 返回按钮事件
+        backButton.addEventListener('click', function() {
+            categoryPage.classList.remove('active');
+            homePage.classList.add('active');
+        });
+        
+        // 视频播放功能
+        const videoPlayer = document.getElementById('video-player');
+        const playerVideo = document.getElementById('player-video');
+        const closePlayer = document.getElementById('close-player');
+        
+        // 视频数据
+        const videoSources = {
+            '1': 'videos/guo1.mp4',
+            '2': 'videos/guo2.mp4',
+            '3': 'videos/guo3.mp4',
+            '4': 'videos/guo4.mp4',
+            '5': 'videos/guo5.mp4',
+            '6': 'videos/guo.mp4'
+        };
+        
+        // 视频点击事件
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const videoId = this.dataset.video;
+                playerVideo.src = videoSources[videoId];
+                videoPlayer.style.display = 'flex';
+                playerVideo.play();
+            });
+        });
+        
+        // 关闭播放器
+        closePlayer.addEventListener('click', function() {
+            videoPlayer.style.display = 'none';
+            playerVideo.pause();
+        });
+        
+        // 上传功能
+        const publishBtn = document.getElementById('publish-btn');
+        const uploadModal = document.getElementById('upload-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const confirmUploadBtn = document.getElementById('confirm-upload');
+        
+        // 打开上传模态框
+        publishBtn.addEventListener('click', function() {
+            uploadModal.style.display = 'flex';
+        });
+        
+        // 关闭上传模态框
+        closeModalBtn.addEventListener('click', function() {
+            uploadModal.style.display = 'none';
+        });
+        
+        // 点击上传区域触发文件选择
+        uploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // 拖放功能
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.style.background = '#2a2a2a';
+        });
+        
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.style.background = '';
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.style.background = '';
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleVideoUpload(fileInput.files[0]);
+            }
+        });
+        
+        // 文件选择事件
+        fileInput.addEventListener('change', function() {
+            if (this.files.length) {
+                handleVideoUpload(this.files[0]);
+            }
+        });
+        
+        // 确认上传
+        confirmUploadBtn.addEventListener('click', function() {
+            if (fileInput.files.length) {
+                handleVideoUpload(fileInput.files[0]);
+                uploadModal.style.display = 'none';
+                alert('视频上传成功！已添加到您的视频列表。');
+            } else {
+                alert('请先选择视频文件');
+            }
+        });
+        
+        // 处理视频上传
+        function handleVideoUpload(file) {
+            if (!file || !file.type.match('video.*')) {
+                alert('请选择视频文件');
+                return;
+            }
+            
+            // 检查文件大小（最大100MB）
+            if (file.size > 100 * 1024 * 1024) {
+                alert('视频文件太大，请选择小于100MB的文件');
+                return;
+            }
+            
+            // 在实际应用中，这里应该将视频上传到服务器
+            // 这里只是模拟上传成功
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // 创建视频URL
+                const videoUrl = URL.createObjectURL(file);
+                
+                // 在实际应用中，这里会将视频添加到用户的视频列表
+                console.log('视频上传成功:', videoUrl);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
